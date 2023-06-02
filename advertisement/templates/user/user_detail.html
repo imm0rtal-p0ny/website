@@ -1,0 +1,16 @@
+{% include 'base/base.html' %}
+{% block title %}
+    <title>{{object.email}}</title>
+{% endblock %}
+{% block content %}
+    <h3>First name: {{object.first_name}}</h3>
+    <h3>Last name: {{object.last_name}}</h3>
+    <h3>Middle name: {{object.middle_name}}</h3>
+    <h3>Email name: {{object.email}}</h3>
+    {% if user.pk == object.pk %}
+        <a href="{% url 'update_user' %}">Update user</a>
+    {% endif %}
+
+
+{% endblock %}
+

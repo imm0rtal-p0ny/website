@@ -1,0 +1,33 @@
+{% include 'base/base.html' %}
+{% block title %}
+    <title>{{object.email}}</title>
+{% endblock %}
+{% block content %}
+<form method="get" action="{% url 'user_list' %}">
+    {{search_form.as_p}}
+
+    <button type="submit">Search</button>
+</form>
+<ul>
+    {% for object in object_list %}
+    <li>
+        <a href="{% url 'user_detail' pk=object.pk %}">{{ object.email }}</a>>
+    </li>
+    {% endfor %}
+</ul>
+
+<div class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+  {% endif %}
+
+  <span class="current-page">{{ page_obj.number }}</span>
+
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+  {% endif %}
+</div>
+
+
+
+{% endblock %}

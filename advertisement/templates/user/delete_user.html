@@ -1,0 +1,13 @@
+{% include 'base/base.html' %}
+{% block title %}
+<title>Delete user</title>
+{% endblock %}
+
+
+{% block content %}
+<form method="post">
+    <label>{{ object }} delete this account?</label>
+
+    <button type="submit">Delete</button>
+</form>
+{% endblock %}

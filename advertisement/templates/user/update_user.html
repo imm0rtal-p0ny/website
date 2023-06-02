@@ -1,0 +1,19 @@
+{% include 'base/base.html' %}
+{% block title %}
+    <title>Update</title>
+{% endblock %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        {% if not user.is_authorized %}
+            <a href="{% url 'verification' %}">verification</a>
+        {% endif %}
+        <a href="{% url 'change_password' %}">Change password</a>
+        <a href="{% url 'delete_user' pk=user.pk %}">Delete user</a>
+        <a href="{% url 'change_email' %}">Change email</a>
+        <a href="{% url 'reset_password' %}">Reset password</a>
+        <br>
+        <button type="submit">Update</button>
+    </form>
+{% endblock %}

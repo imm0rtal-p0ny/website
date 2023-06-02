@@ -1,0 +1,16 @@
+{% include 'base/base.html' %}
+{% block title %}
+    <title>Sing in</title>
+{% endblock %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <div>
+            <a href="{% url 'reset_password' %}">Restore password</a>
+        </div>
+
+        <button type="submit">Sumbit</button>
+    </form>
+{% endblock %}
+
