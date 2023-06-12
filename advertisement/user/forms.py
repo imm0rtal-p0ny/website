@@ -80,7 +80,7 @@ class ResetPasswordForm(forms.Form):
 
 
 class SearchForm(forms.Form):
-    search = forms.CharField()
+    search = forms.CharField(required=False)
 
 
 

@@ -1,0 +1,17 @@
+{% include 'base/base.html' %}
+{% block title %}
+    <title>Create board</title>
+{% endblock %}
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form.as_p}}
+    {{photo.as_p}}
+    <button type="submit">Save</button>
+</form>
+    {% if user == board.user %}
+        <a href="{% url 'delete_board' pk=board.pk%}">
+            <button>Delete</button>
+        </a>
+    {% endif %}
+{% endblock %}

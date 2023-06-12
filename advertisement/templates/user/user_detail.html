@@ -9,7 +9,9 @@
     <h3>Email name: {{object.email}}</h3>
     {% if user.pk == object.pk %}
         <a href="{% url 'update_user' %}">Update user</a>
+
     {% endif %}
+    <a href="{% url 'user_boards' pk=object.pk%}">User board</a>
 
 
 {% endblock %}

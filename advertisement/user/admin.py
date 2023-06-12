@@ -7,7 +7,7 @@ class CustomUserAdmins(UserAdmin):
     model = CustomUser
 
     ordering = ('email',)
-    list_display = ('email', 'first_name', 'last_name', 'is_staff')  # Замініть 'username' на 'email' або наявне поле відображення
+    list_display = ('email', 'first_name', 'last_name', 'is_staff')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal Info', {'fields': ('first_name', 'last_name', 'middle_name')}),

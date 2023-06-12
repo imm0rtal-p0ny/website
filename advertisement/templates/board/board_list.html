@@ -1,0 +1,56 @@
+{% include 'base/base.html' %}
+{% block title %}
+    <title>Board list</title>
+{% endblock %}
+{% block content %}
+{% for division in divisions %}
+    <a href="{% url 'division' name=division.name %}">{{division.name}}</a>
+{% endfor %}
+<form method="get">
+    {{search_form.as_p}}
+    <a href="{% url 'create_board' %}">
+        Create
+    </a>
+    <button type="submit">Search</button>
+</form>
+<form method="get">
+    {{filter_form.as_p}}
+    <button type="submit">Apply</button>
+</form>
+    <a href="{% url 'create_board' %}">
+            Create
+    </a>
+    <a href={{clear_url}}>
+        <button>Clear</button>
+    </a>
+{% if not object_list %}
+    <h2>None</h2>
+{% endif %}
+    <hr>
+
+
+{% for board in object_list %}
+{% if board.status.name == 'Public' %}
+
+    <a href="{% url 'board' pk=board.pk%}">
+        <img src="{{board.photo_mini.url}}" alt="{{board.name}}" width="100" height="100" sizes="50%">
+        <h3>{{board}}</h3>
+        <p>{{board.description}}</p>
+    </a>
+    <hr>
+{% endif %}
+{% endfor %}
+
+<div class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+  {% endif %}
+
+  <span class="current-page">{{ page_obj.number }}</span>
+
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+  {% endif %}
+</div>
+
+{% endblock %}

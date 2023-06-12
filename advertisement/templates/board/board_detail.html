@@ -1,0 +1,21 @@
+{% include 'base/base.html' %}
+{% block title %}
+    <title>{{object.name}}</title>
+{% endblock %}
+{% block content %}
+<h1>{{object.name}}</h1>
+<a href="{{object.photo.url}}">
+    <img src="{{ object.photo.url }}" alt="Board Image" width="300" height="200">
+</a>
+<h4>description:</h4>
+<p>{{object.description}}</p>
+<h4>Price: {{object.price}}</h4>
+<h4>Count: {{object.count}}</h4>
+<h4>User seller: {{object.user.first_name}} {{object.user.last_name}}</h4>
+<h4>Contact seller: {{object.user.email}}</h4>
+<h4>Condition: {{object.condition}}</h4>
+<p>View count: {{object.view_count}}</p>
+{% if user == object.user %}
+    <a href="{% url 'update_board' pk=object.pk%}">Update</a>
+{% endif %}
+{% endblock %}

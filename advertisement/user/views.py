@@ -130,17 +130,12 @@ class ResetPasswordView(View):
     def post(self, request):
         if request.POST.get('code'):
             user_email = request.POST.get('email')
-            print(1)
             form = ResetPasswordForm(request.POST)
             if form.is_valid():
-                print(2)
-
                 user_code = form.cleaned_data.get('code')
                 new_password = form.cleaned_data.get('new_password')
-                print(new_password)
                 try:
                     result = ConfirmationCode.check_valid_code(user_email, user_code)
-                    print(result)
                     if result:
                         user = CustomUser.get_by_email(user_email)
 
@@ -205,14 +200,12 @@ class DeleteUserView(DeleteView):
     def get(self, request, *args, **kwargs):
         user = self.get_object()
         if user != request.user:
-            print(8)
             return redirect('home')
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         user = self.get_object()
         if user != request.user:
-            print(8)
             return redirect('home')
         return super().post(request, *args, **kwargs)
 
@@ -246,7 +239,6 @@ class UserListView(ListView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        print(self.request.GET.get('search'))
         context_data['search_form'] = SearchForm(initial=self.request.GET)
         return context_data
 
