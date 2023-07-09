@@ -7,14 +7,17 @@ import uuid
 
 
 DEFAULT_BOARD_PHOTO = 'board_photos/photo_default.png'
-DEFAULT_BOARD_PHOTO_MINI = 'board_photos/photo_default_mini.png'
+DEFAULT_BOARD_PHOTO_ICON = 'board_photos/photo_default_icon.png'
+DEFAULT_BOARD_PHOTO_PAGE = 'board_photos/photo_default_page.png'
 
 
 def delete_photos_except_default(board):
     if board.photo.name != DEFAULT_BOARD_PHOTO:
         default_storage.delete(board.photo.name)
-    if board.photo_mini.name != DEFAULT_BOARD_PHOTO_MINI:
-        default_storage.delete(board.photo_mini.name)
+    if board.photo_icon.name != DEFAULT_BOARD_PHOTO_ICON:
+        default_storage.delete(board.photo_icon.name)
+    if board.photo_page.name != DEFAULT_BOARD_PHOTO_PAGE:
+        default_storage.delete(board.photo_page.name)
 
 
 def board_photo_upload_path(instance, filename):
@@ -23,10 +26,16 @@ def board_photo_upload_path(instance, filename):
     return f'board_photos/{unique_filename}'
 
 
-def board_photo_mini_upload_path(instance, filename):
+def board_photo_icon_upload_path(instance, filename):
     name, ext = os.path.splitext(filename)
 
-    return f'board_photos/{name}_mini{ext}'
+    return f'board_photos/{name}_icon{ext}'
+
+
+def board_photo_page_upload_path(instance, filename):
+    name, ext = os.path.splitext(filename)
+
+    return f'board_photos/{name}_page{ext}'
 
 
 class Board(models.Model):
@@ -36,7 +45,8 @@ class Board(models.Model):
     price = models.IntegerField(default=0)
     count = models.IntegerField(default=0)
     photo = models.ImageField(upload_to=board_photo_upload_path, default=DEFAULT_BOARD_PHOTO, null=True)
-    photo_mini = models.ImageField(upload_to=board_photo_mini_upload_path, default=DEFAULT_BOARD_PHOTO_MINI, null=True)
+    photo_icon = models.ImageField(upload_to=board_photo_icon_upload_path, default=DEFAULT_BOARD_PHOTO_ICON, null=True)
+    photo_page = models.ImageField(upload_to=board_photo_page_upload_path, default=DEFAULT_BOARD_PHOTO_PAGE, null=True)
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

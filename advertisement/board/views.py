@@ -4,21 +4,21 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from .models import Board, Division, delete_photos_except_default, DEFAULT_BOARD_PHOTO, DEFAULT_BOARD_PHOTO_MINI
+from .models import Board, Division, delete_photos_except_default, DEFAULT_BOARD_PHOTO, \
+    DEFAULT_BOARD_PHOTO_PAGE, DEFAULT_BOARD_PHOTO_ICON
 from django.views.generic import DetailView, ListView, CreateView, UpdateView
 from . import forms
 from user.models import CustomUser
 from PIL import Image, ImageOps
 
 
-def create_mini_size_photo(image_path):
+def create_mini_size_photo(image_path, size):
     image_full_path = os.path.join(settings.MEDIA_ROOT, image_path)
     name, extension = os.path.splitext(image_path)
     image_path_mini = f'{name}{extension}'
     image = Image.open(image_full_path)
-    target_size = (100, 100)
-    image.thumbnail(target_size)
-    padded_image = ImageOps.pad(image, target_size)
+    image.thumbnail(size)
+    padded_image = ImageOps.pad(image, size)
     buffer = BytesIO()
     padded_image.save(buffer, format='PNG')
     image_file = ContentFile(buffer.getvalue())
@@ -55,7 +55,7 @@ class BoardListView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         divisions = Division.objects.all()
         context_data = super().get_context_data(object_list=object_list, **kwargs)
-        context_data['search_form'] = forms.SearchForm()
+        context_data['search_form'] = forms.SearchForm(self.request.GET)
         context_data['divisions'] = divisions
         context_data['filter_form'] = forms.FilterForm(self.request.GET)
         context_data['clear_url'] = self.request.build_absolute_uri().split('?')[0]
@@ -94,8 +94,10 @@ class BoardCreateView(CreateView):
         board.user = self.request.user
         board.save()
         if form.cleaned_data.get('photo') != 'board_photos/photo_default.png':
-            image = create_mini_size_photo(board.photo.path)
-            board.photo_mini.save(image[0], image[1])
+            image_icon = create_mini_size_photo(board.photo.path, (100, 100))
+            image_page = create_mini_size_photo(board.photo.path, (300, 300))
+            board.photo_icon.save(image_icon[0], image_icon[1])
+            board.photo_page.save(image_page[0], image_page[1])
         return super().form_valid(form)
 
     def get(self, request,  *args, **kwargs):
@@ -150,21 +152,31 @@ class BoardUpdateView(UpdateView):
         old_photo = form.initial.get('photo')
         board = form.save(commit=False)
         new_photo = board.photo
-        mini_photo = board.photo_mini
+        photo_icon = board.photo_icon
+        photo_page = board.photo_page
+
         board.save()
         print(old_photo)
         print(new_photo)
-        print(mini_photo)
+        print(photo_icon)
         if new_photo != old_photo and new_photo != DEFAULT_BOARD_PHOTO:
-            if mini_photo != DEFAULT_BOARD_PHOTO_MINI:
-                board.photo_mini.delete()
-            image = create_mini_size_photo(board.photo.path)
-            board.photo_mini.save(image[0], image[1])
+            if photo_icon != DEFAULT_BOARD_PHOTO_ICON:
+                board.photo_icon.delete()
+            image = create_mini_size_photo(board.photo.path, (100, 100))
+            board.photo_icon.save(image[0], image[1])
+
+            if photo_page != DEFAULT_BOARD_PHOTO_PAGE:
+                board.photo_page.delete()
+            image = create_mini_size_photo(board.photo.path, (300, 300))
+            board.photo_page.save(image[0], image[1])
 
         if new_photo == DEFAULT_BOARD_PHOTO or form.cleaned_data.get('delete_photo'):
-            if mini_photo != DEFAULT_BOARD_PHOTO_MINI:
-                mini_photo.delete()
-            board.photo_mini = DEFAULT_BOARD_PHOTO_MINI
+            if photo_icon != DEFAULT_BOARD_PHOTO_ICON:
+                photo_icon.delete()
+            board.photo_icon = DEFAULT_BOARD_PHOTO_ICON
+            if photo_page != DEFAULT_BOARD_PHOTO_PAGE:
+                photo_page.delete()
+            board.photo_page = DEFAULT_BOARD_PHOTO_PAGE
 
         board.save()
         return super().form_valid(form)

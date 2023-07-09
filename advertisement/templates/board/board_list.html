@@ -33,7 +33,7 @@
 {% if board.status.name == 'Public' %}
 
     <a href="{% url 'board' pk=board.pk%}">
-        <img src="{{board.photo_mini.url}}" alt="{{board.name}}" width="100" height="100" sizes="50%">
+        <img src="{{board.photo_icon.url}}" alt="{{board.name}}" width="100" height="100" sizes="50%">
         <h3>{{board}}</h3>
         <p>{{board.description}}</p>
     </a>
