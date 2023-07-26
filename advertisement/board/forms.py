@@ -1,11 +1,5 @@
 from django import forms
 from . import models
-from PIL import Image, ImageOps
-
-
-def create_mini_size_photo():
-    pass
-
 
 
 class SearchForm(forms.Form):
@@ -19,6 +13,7 @@ class FilterForm(forms.Form):
 
 
 class BoardUpdateForm(forms.ModelForm):
+    photo = forms.ImageField(required=True)
     clear_photo = forms.BooleanField(required=False)
 
     class Meta:
@@ -35,20 +30,6 @@ class BoardUpdateForm(forms.ModelForm):
             'photo',
         ]
 
-    def clean(self):
-        cleaned_data = super().clean()
-        clear_photo = cleaned_data.get('clear_photo')
-        photo = cleaned_data.get('photo')
-        old_photo = self.initial.get('photo')
-        if old_photo != photo and old_photo != models.DEFAULT_BOARD_PHOTO:
-            old_photo.delete()
-
-        if clear_photo:
-            if photo != models.DEFAULT_BOARD_PHOTO:
-                photo.delete()
-                cleaned_data['photo'] = models.DEFAULT_BOARD_PHOTO
-
-        return cleaned_data
 
 
 
