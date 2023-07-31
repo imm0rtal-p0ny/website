@@ -19,12 +19,36 @@ class IsAuthorized(permissions.BasePermission):
         return False
 
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
+class IsOwnerOrSuperUser(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        if request.user.is_authenticated and request.user.is_authorized:
+            return True
+
+        return False
+
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        return bool(request.user == obj.user)
+        return bool(request.user == obj.user or request.user.is_superuser)
+
+
+class UserRegisterUpdatePermissions(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user == obj or request.user.is_superuser
+
+
+class UserAuthenticatedAndNotAuthorized(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_authenticated and not request.user.is_authorized:
+            return True
+        return False
 
 
 
