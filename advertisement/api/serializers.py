@@ -11,6 +11,7 @@ class BoardSerializer(serializers.ModelSerializer):
     photo_page = serializers.ImageField(read_only=True)
     create_at = serializers.DateTimeField(read_only=True)
     update_at = serializers.DateTimeField(read_only=True)
+    view_count = serializers.IntegerField(read_only=True)
     clear_photo = serializers.BooleanField(default=False, write_only=True)
 
     class Meta:
@@ -32,7 +33,8 @@ class BoardSerializer(serializers.ModelSerializer):
             'photo_page',
             'create_at',
             'update_at',
-            'clear_photo'
+            'clear_photo',
+            'view_count',
         )
 
     def __init__(self, *args, **kwargs):

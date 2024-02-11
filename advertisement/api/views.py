@@ -8,7 +8,6 @@ from django.core.mail import send_mail
 from user.user_exception import NotUserException, NotUserCodeException, TimeOutCodeException, CodeDoNotMatchException
 
 
-
 class BoardViewSet(viewsets.ModelViewSet):
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
@@ -30,6 +29,11 @@ class BoardViewSet(viewsets.ModelViewSet):
 
         return response
 
+    def get_object(self):
+        obj = super().get_object()
+        obj.view_count += 1
+        obj.save()
+        return obj
 
 class RegionViewSet(viewsets.ModelViewSet):
     queryset = Region.objects.all()
